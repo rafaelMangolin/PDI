@@ -2,95 +2,53 @@
 import numpy as np
 import cv2
 import colorsys
+import imageio
 
-h = 80
-s = 0
-v = 100
-
-# rgb_clr = colorsys.hsv_to_rgb(h,s,v)
-print(rgb_clr)
-
-w_h = np.linspace(h, h, 128)
-w_s = np.linspace(0, 100, 128)
-w_v = np.linspace(100, 100, 128)
-
-h_b = np.linspace(h, h, 128)
-s_b = np.linspace(100, 100, 128)
-v_b = np.linspace(100, 0, 128)
-
-p_h = w_h+h_b
-p_s = w_s+s_b
-p_v = w_v+v_b
-
-p_h1 = np.tile( p_h.reshape(256,1), 256 )
-p_h2 = np.tile( p_s.reshape(256,1), 256 )
-p_v3 = np.tile( p_v.reshape(256,1), 256 )
+def print_img(img, count):
+    cv2.imshow('paleta{}'.format(count), img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
-# # Função para gerar a peleta de cores com um início e fim de cor definida pelo usuário
-# def gerar_paleta( b1, g1, r1):
-    
-#     # Função: np.linspace(A, B, X)
-#     # Descrição: gera um vetor com X valores entre A e B.
-#     b = np.linspace(b1, b2, 256)
-#     g = np.linspace(g1, g2, 256)
-#     r = np.linspace(r1, r2, 256)
-        
-#     # Função: a.reshape(alt, largura)
-#     # Descrição: Da uma nova forma a uma lista. Neste caso, criamos uma altura de 256 e 1 de largura
-#     # Função: np.tile(array, X)
-#     # Descrição: Repete um array X vezes. Aqui, repetindo o mesmo valor no eixo da largura para ficar com 256 de largura    
-#     p1 = np.tile( b.reshape(256,1), 256 )
-#     p2 = np.tile( g.reshape(256,1), 256 )
-#     p3 = np.tile( r.reshape(256,1), 256 )
-       
-#     # Função: np.uint8(num)
-#     # Descrição: converter números para 8 bits
-#     p1 = np.uint8(p1)
-#     p2 = np.uint8(p2)
-#     p3 = np.uint8(p3)
-        
-#     # Função: np.dstack( (v1, v2) )
-#     # Descrição: Faz a concatenação dos dois vetores, por exemplo.
-#     paleta = np.dstack( (np.dstack( (p1,p2) ), p3) )
-            
-#     return paleta
-#     # Fim da função
+def apply_pallet(img, pallet): 
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    new = np.zeros((len(img_gray),len(img_gray[0]),3), np.uint8)
+    for i in range(len(img_gray)):
+        for j in range(len(img_gray[0])):
+            new[i,j] = pallet[img_gray[i,j],0]
+    return new
 
-# # Definindo uma cor inicial
-# b1 = 79
-# g1 = 79
-# r1 = 47
-# # Definindo uma cor final
-# b2 = 134
-# g2 = 230
-# r2 = 240
+def create_pallet(hue):
+    black_saturation    = np.linspace(255, 255, 128)
+    black_intensity     = np.linspace(0, 255, 128)
 
-# # Gerando uma paleta de cores da inicial até a final    
-# paleta = gerar_paleta(b1, g1, r1, b2, g2, r2)
+    saturation_white    = np.linspace(255, 0, 128)
+    intensity_white     = np.linspace(255, 255, 128)
 
-# # Abrir a imagem original em tons de cinza, por isso o parâmetro 0
-# img = cv2.imread('./Imagens/original.jpg', 0)
+    palet_hue           = np.linspace(hue, hue, 256)
+    palet_saturation    = np.concatenate((black_saturation, saturation_white))
+    palet_intensity     = np.concatenate((black_intensity, intensity_white))
 
-# # Criar uma nova matriz com o mesmo tamanho que a imagem, porém com uma terceira dimensão para armazenar as cores BGR
-# # Função: np.zeros ( (x,y,z) , dtype=np.int8/16/32/... )
-# # img.shape[0] = altura, 1 = largura, 2 = profundidade, etc (conforme existir)
-# img_colorida = np.zeros( (img.shape[0], img.shape[1], 3) )
+    palet_hue           = np.tile(palet_hue.reshape((256,1)), 256)
+    palet_saturation    = np.tile(palet_saturation.reshape((256,1)), 256)
+    palet_intensity     = np.tile(palet_intensity.reshape((256,1)), 256)
 
-# # Como a peleta possui as mesmas cores RGB no eixo da largura, podemos sempre pegar a posição 0
-# # O for percorre a altura e a largura da nova matriz criada para representar a imagem colorida, e recebe a cor de acordo com a imagem original e o tom de cinza
-# for i in range(img.shape[0]):
-#     for j in range(img.shape[1]):
-#         img_colorida[i][j] = paleta [ img[i][j] ][0]
+    img = cv2.merge([palet_hue,palet_saturation,palet_intensity])
+    img = np.uint8(img)
 
-# # Converte os números da matriz para 8 bits
-# img_colorida = np.uint8(img_colorida)
+    return cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
 
-# # Mostrar uma imagem
-# cv2.imshow('Paleta de cores', paleta)
-# cv2.imshow('Imagem Original', img)
-# cv2.imshow('Imagem resultante', img_colorida)
+if __name__ == "__main__":
+    # img = cv2.imread('beico2.jpg')
+    img_name = 'mundo.gif'
+    gif = imageio.mimread(img_name)
+    new_gif = [] 
+    colors = np.linspace(0, 180, len(gif))
 
-# # Funções para o funcionamento correto do python no Windows.
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+    for i in range(len(colors)):
+        color = colors[i]
+        frame = gif[i]
+        new_gif.append(apply_pallet(frame,create_pallet(color)))
+
+
+    gif = imageio.mimwrite('colorization_{}'.format(img_name),new_gif,'gif')

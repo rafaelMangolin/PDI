@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from PIL import Image
 
-imagem = 'beico.jpeg'
+imagem = 'lena.png'
 
 
 def chroma_subsampling(j,a,b):
@@ -32,19 +32,6 @@ def chroma_subsampling(j,a,b):
 	cv2.imwrite('{}:{}:{}_{}'.format(j,a,b,imagem),img)
 
 
-
-# def imga():
-# 	x = Image.open('beico.jpeg')
-# 	a = x.convert('YCbCr')
-# 	b = a.convert('RGB')
-
-# 	x = np.array(x) 
-# 	b = np.array(b)
-
-# 	print(np.array_equal(x,b))
-
-
-# imga()
 chroma_subsampling(4,4,4)
 chroma_subsampling(4,2,2)
 chroma_subsampling(4,2,0)
