@@ -38,3 +38,6 @@ def escala(nome_imagem, formato):
 
 if __name__ == '__main__':
 	escala('lena.png',(2,2))
+	escala('lena.png',(.5,.5))
+	escala('lena.png',(1,.5))
+	escala('lena.png',(.5,1))
