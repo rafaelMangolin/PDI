@@ -81,6 +81,7 @@ def rotacao(imagem_nome, ang):
 				imagem_nova[i,j] = imagem[x,y]
 
 
-	cv2.imwrite('angulo_{}_{}'.format(ang,imagem),imagem_nova)
+	cv2.imwrite('angulo_{}_{}'.format(ang,imagem_nome),imagem_nova)
 
-rotacao('lena.png',180)
+rotacao('lena.png',45)
+rotacao('lena.png',-45)
