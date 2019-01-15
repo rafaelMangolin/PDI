@@ -4,7 +4,7 @@ from math import cos, radians, sin
 
 
 def multiplicar_ponto_matriz(x,y,mtr):
-	ponto = np.array([[x],[y],[1]])
+	ponto = np.array([x,y,1])
 	return np.matmul(mtr,ponto).astype(int)
 
 
@@ -27,11 +27,11 @@ def parametros_rotacao(largura,altura,mtz_rot):
 	xs = [p1[0],p2[0],p3[0],p4[0]]
 	ys = [p1[1],p2[1],p3[1],p4[1]]
 
-	maxx = max(xs)[0]
-	minx = min(xs)[0]
+	maxx = max(xs)
+	minx = min(xs)
 
-	maxy = max(ys)[0]
-	miny = min(ys)[0]
+	maxy = max(ys)
+	miny = min(ys)
 
 	alt_img_rot = int(maxy-miny)
 	lar_img_rot = int(maxx-minx)

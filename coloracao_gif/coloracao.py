@@ -44,5 +44,5 @@ def colorization(gif_name, start_hue, end_hue):
 
 if __name__ == "__main__":
     img_name = 'mundo.gif'
-    colorization(img_name,0,180)
+    colorization(img_name,20,180)
     
